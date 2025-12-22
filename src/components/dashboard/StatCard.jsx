@@ -1,27 +1,7 @@
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface StatCardProps {
-  title: string;
-  value: string | number;
-  subtitle?: string;
-  icon: LucideIcon;
-  trend?: {
-    value: number;
-    isPositive: boolean;
-  };
-  variant?: 'default' | 'primary' | 'accent' | 'success';
-}
-
-const StatCard: React.FC<StatCardProps> = ({
-  title,
-  value,
-  subtitle,
-  icon: Icon,
-  trend,
-  variant = 'default',
-}) => {
+const StatCard = ({ title, value, subtitle, icon: Icon, trend, variant = 'default' }) => {
   const iconBgClasses = {
     default: 'bg-secondary',
     primary: 'gradient-primary',
@@ -35,14 +15,9 @@ const StatCard: React.FC<StatCardProps> = ({
         <div>
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
           <p className="mt-2 text-3xl font-bold font-display">{value}</p>
-          {subtitle && (
-            <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
-          )}
+          {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
           {trend && (
-            <p className={cn(
-              "mt-2 text-sm font-medium",
-              trend.isPositive ? "text-success" : "text-destructive"
-            )}>
+            <p className={cn("mt-2 text-sm font-medium", trend.isPositive ? "text-success" : "text-destructive")}>
               {trend.isPositive ? '↑' : '↓'} {Math.abs(trend.value)}% from last week
             </p>
           )}
@@ -51,10 +26,7 @@ const StatCard: React.FC<StatCardProps> = ({
           "flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110",
           iconBgClasses[variant]
         )}>
-          <Icon className={cn(
-            "h-6 w-6",
-            variant === 'default' ? "text-foreground" : "text-primary-foreground"
-          )} />
+          <Icon className={cn("h-6 w-6", variant === 'default' ? "text-foreground" : "text-primary-foreground")} />
         </div>
       </div>
     </div>

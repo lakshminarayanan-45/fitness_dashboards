@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Dashboard from './Dashboard';
 
-const Index: React.FC = () => {
+const Index = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {

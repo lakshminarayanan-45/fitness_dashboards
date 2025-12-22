@@ -14,23 +14,13 @@ import {
 import { useWorkout, CATEGORIES } from '@/contexts/WorkoutContext';
 import { useToast } from '@/hooks/use-toast';
 
-interface LoggedExercise {
-  exerciseId: string;
-  exerciseName: string;
-  category: string;
-  sets: number;
-  reps: number;
-  weight: number;
-  duration: number;
-}
-
-const WorkoutLog: React.FC = () => {
+const WorkoutLog = () => {
   const { plans, addLog } = useWorkout();
   const { toast } = useToast();
 
-  const [selectedPlan, setSelectedPlan] = useState<string>('');
+  const [selectedPlan, setSelectedPlan] = useState('');
   const [isLogging, setIsLogging] = useState(false);
-  const [exercises, setExercises] = useState<LoggedExercise[]>([]);
+  const [exercises, setExercises] = useState([]);
   const [notes, setNotes] = useState('');
   const [startTime] = useState(new Date());
 
@@ -81,13 +71,13 @@ const WorkoutLog: React.FC = () => {
     toast({ title: 'Added', description: 'Exercise added to your workout' });
   };
 
-  const updateExercise = (index: number, field: keyof LoggedExercise, value: number) => {
+  const updateExercise = (index, field, value) => {
     const updated = [...exercises];
     updated[index] = { ...updated[index], [field]: Math.max(0, value) };
     setExercises(updated);
   };
 
-  const removeExercise = (index: number) => {
+  const removeExercise = (index) => {
     setExercises(exercises.filter((_, i) => i !== index));
   };
 

@@ -12,11 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useNavigate } from 'react-router-dom';
 
-interface HeaderProps {
-  onMenuClick?: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
+const Header = ({ onMenuClick }) => {
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -30,12 +26,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="flex h-16 items-center justify-between px-4 lg:px-6">
         <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={onMenuClick}
-          >
+          <Button variant="ghost" size="icon" className="lg:hidden" onClick={onMenuClick}>
             <Menu className="h-5 w-5" />
           </Button>
           
@@ -44,25 +35,14 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
               <Dumbbell className="h-5 w-5 text-primary-foreground" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="font-display text-xl font-bold text-gradient">
-                FitTrack Pro
-              </h1>
+              <h1 className="font-display text-xl font-bold text-gradient">FitTrack Pro</h1>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleTheme}
-            className="rounded-xl"
-          >
-            {theme === 'dark' ? (
-              <Sun className="h-5 w-5 text-warning" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
+          <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-xl">
+            {theme === 'dark' ? <Sun className="h-5 w-5 text-warning" /> : <Moon className="h-5 w-5" />}
           </Button>
 
           <DropdownMenu>
@@ -70,11 +50,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
               <Button variant="ghost" className="flex items-center gap-2 rounded-xl px-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
                   {user?.avatar ? (
-                    <img 
-                      src={user.avatar} 
-                      alt={user.name} 
-                      className="h-8 w-8 rounded-full object-cover"
-                    />
+                    <img src={user.avatar} alt={user.name} className="h-8 w-8 rounded-full object-cover" />
                   ) : (
                     <User className="h-4 w-4" />
                   )}

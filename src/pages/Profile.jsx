@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 
-const Profile: React.FC = () => {
+const Profile = () => {
   const { user, updateProfile, logout } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();

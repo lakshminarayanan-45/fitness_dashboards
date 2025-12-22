@@ -25,18 +25,18 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useWorkout, Exercise, CATEGORIES } from '@/contexts/WorkoutContext';
+import { useWorkout, CATEGORIES } from '@/contexts/WorkoutContext';
 import { useToast } from '@/hooks/use-toast';
 
-const PlanBuilder: React.FC = () => {
+const PlanBuilder = () => {
   const { plans, addPlan, updatePlan, deletePlan, addExerciseToPlan, updateExercise, deleteExercise } = useWorkout();
   const { toast } = useToast();
 
   const [isPlanDialogOpen, setIsPlanDialogOpen] = useState(false);
   const [isExerciseDialogOpen, setIsExerciseDialogOpen] = useState(false);
-  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
-  const [editingExercise, setEditingExercise] = useState<Exercise | null>(null);
-  const [editingPlan, setEditingPlan] = useState<{ id: string; name: string; description: string } | null>(null);
+  const [selectedPlanId, setSelectedPlanId] = useState(null);
+  const [editingExercise, setEditingExercise] = useState(null);
+  const [editingPlan, setEditingPlan] = useState(null);
 
   const [planForm, setPlanForm] = useState({ name: '', description: '' });
   const [exerciseForm, setExerciseForm] = useState({
@@ -93,13 +93,13 @@ const PlanBuilder: React.FC = () => {
     resetExerciseForm();
   };
 
-  const handleEditPlan = (plan: typeof plans[0]) => {
+  const handleEditPlan = (plan) => {
     setEditingPlan({ id: plan.id, name: plan.name, description: plan.description });
     setPlanForm({ name: plan.name, description: plan.description });
     setIsPlanDialogOpen(true);
   };
 
-  const handleEditExercise = (planId: string, exercise: Exercise) => {
+  const handleEditExercise = (planId, exercise) => {
     setSelectedPlanId(planId);
     setEditingExercise(exercise);
     setExerciseForm({
@@ -112,17 +112,17 @@ const PlanBuilder: React.FC = () => {
     setIsExerciseDialogOpen(true);
   };
 
-  const handleDeletePlan = (id: string) => {
+  const handleDeletePlan = (id) => {
     deletePlan(id);
     toast({ title: 'Deleted', description: 'Plan deleted successfully' });
   };
 
-  const handleDeleteExercise = (planId: string, exerciseId: string) => {
+  const handleDeleteExercise = (planId, exerciseId) => {
     deleteExercise(planId, exerciseId);
     toast({ title: 'Deleted', description: 'Exercise removed successfully' });
   };
 
-  const openAddExercise = (planId: string) => {
+  const openAddExercise = (planId) => {
     setSelectedPlanId(planId);
     resetExerciseForm();
     setIsExerciseDialogOpen(true);

@@ -6,7 +6,7 @@ import WorkoutCalendar from '@/components/dashboard/WorkoutCalendar';
 import { useWorkout } from '@/contexts/WorkoutContext';
 import { useAuth } from '@/contexts/AuthContext';
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   const { user } = useAuth();
   const { getWeeklyWorkouts, getTotalTime, getTotalVolume } = useWorkout();
 

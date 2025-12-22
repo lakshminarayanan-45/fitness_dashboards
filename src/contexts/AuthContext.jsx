@@ -1,28 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  fitnessGoal?: string;
-  avatar?: string;
-}
+const AuthContext = createContext(undefined);
 
-interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  loginWithGoogle: () => Promise<boolean>;
-  register: (email: string, password: string, name: string) => Promise<boolean>;
-  logout: () => void;
-  updateProfile: (data: Partial<User>) => void;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -33,12 +14,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email, password) => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     if (email && password.length >= 6) {
-      const newUser: User = {
+      const newUser = {
         id: crypto.randomUUID(),
         email,
         name: email.split('@')[0],
@@ -50,11 +31,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
-  const loginWithGoogle = async (): Promise<boolean> => {
+  const loginWithGoogle = async () => {
     // Simulate Google OAuth
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    const newUser: User = {
+    const newUser = {
       id: crypto.randomUUID(),
       email: 'user@gmail.com',
       name: 'Fitness Enthusiast',
@@ -65,11 +46,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return true;
   };
 
-  const register = async (email: string, password: string, name: string): Promise<boolean> => {
+  const register = async (email, password, name) => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     if (email && password.length >= 6 && name) {
-      const newUser: User = {
+      const newUser = {
         id: crypto.randomUUID(),
         email,
         name,
@@ -86,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('fitness-user');
   };
 
-  const updateProfile = (data: Partial<User>) => {
+  const updateProfile = (data) => {
     if (user) {
       const updatedUser = { ...user, ...data };
       setUser(updatedUser);
