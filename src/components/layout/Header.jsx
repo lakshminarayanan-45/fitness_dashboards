@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Header = ({ onMenuClick }) => {
   const { theme, toggleTheme } = useTheme();
@@ -30,17 +30,14 @@ const Header = ({ onMenuClick }) => {
             <Menu className="h-5 w-5" />
           </Button>
           
-          <div 
-            className="flex items-center gap-3 cursor-pointer" 
-            onClick={() => navigate('/dashboard')}
-          >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-primary">
+          <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-primary shadow-md">
               <Dumbbell className="h-5 w-5 text-primary-foreground" />
             </div>
             <div className="hidden sm:block">
               <h1 className="font-display text-xl font-bold text-gradient">FitTrack Pro</h1>
             </div>
-          </div>
+          </Link>
         </div>
 
         <div className="flex items-center gap-2">

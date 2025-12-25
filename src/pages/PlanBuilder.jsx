@@ -25,8 +25,19 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { useWorkout, CATEGORIES } from '@/contexts/WorkoutContext';
 import { useToast } from '@/hooks/use-toast';
+import { usePagination } from '@/hooks/usePagination';
+
+const PLANS_PER_PAGE = 6;
 
 const PlanBuilder = () => {
   const { plans, addPlan, updatePlan, deletePlan, addExerciseToPlan, updateExercise, deleteExercise } = useWorkout();
@@ -46,6 +57,15 @@ const PlanBuilder = () => {
     defaultReps: 10,
     weight: 0,
   });
+
+  const {
+    currentPage,
+    totalPages,
+    paginatedItems: paginatedPlans,
+    goToPage,
+    hasNextPage,
+    hasPrevPage,
+  } = usePagination(plans, PLANS_PER_PAGE);
 
   const resetPlanForm = () => {
     setPlanForm({ name: '', description: '' });
@@ -128,8 +148,25 @@ const PlanBuilder = () => {
     setIsExerciseDialogOpen(true);
   };
 
+  const renderPaginationItems = () => {
+    const items = [];
+    for (let i = 1; i <= totalPages; i++) {
+      items.push(
+        <PaginationItem key={i}>
+          <PaginationLink 
+            isActive={currentPage === i} 
+            onClick={() => goToPage(i)}
+          >
+            {i}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+    return items;
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-display text-3xl font-bold">Workout Plans</h1>
@@ -137,7 +174,7 @@ const PlanBuilder = () => {
         </div>
         <Dialog open={isPlanDialogOpen} onOpenChange={(open) => { setIsPlanDialogOpen(open); if (!open) resetPlanForm(); }}>
           <DialogTrigger asChild>
-            <Button variant="gradient" className="gap-2">
+            <Button className="gap-2 gradient-primary text-primary-foreground hover:opacity-90">
               <Plus className="h-5 w-5" />
               Create New Plan
             </Button>
@@ -181,19 +218,29 @@ const PlanBuilder = () => {
         </Dialog>
       </div>
 
+      {/* Results Summary */}
+      {plans.length > 0 && (
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <span>
+            Showing {(currentPage - 1) * PLANS_PER_PAGE + 1} - {Math.min(currentPage * PLANS_PER_PAGE, plans.length)} of {plans.length} plans
+          </span>
+          {totalPages > 1 && <span>{totalPages} page{totalPages !== 1 ? 's' : ''}</span>}
+        </div>
+      )}
+
       {plans.length === 0 ? (
-        <div className="glass-card rounded-2xl p-12 text-center">
+        <div className="glass-card p-12 text-center">
           <Dumbbell className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
           <h3 className="font-display text-xl font-semibold mb-2">No workout plans yet</h3>
           <p className="text-muted-foreground mb-4">Create your first workout plan to get started</p>
-          <Button variant="gradient" onClick={() => setIsPlanDialogOpen(true)}>
+          <Button className="gradient-primary text-primary-foreground" onClick={() => setIsPlanDialogOpen(true)}>
             <Plus className="h-5 w-5 mr-2" />
             Create Your First Plan
           </Button>
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {plans.map((plan) => (
+          {paginatedPlans.map((plan) => (
             <Card key={plan.id} className="glass-card">
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -257,6 +304,29 @@ const PlanBuilder = () => {
             </Card>
           ))}
         </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious 
+                onClick={() => hasPrevPage && goToPage(currentPage - 1)}
+                className={!hasPrevPage ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+              />
+            </PaginationItem>
+            
+            {renderPaginationItems()}
+            
+            <PaginationItem>
+              <PaginationNext 
+                onClick={() => hasNextPage && goToPage(currentPage + 1)}
+                className={!hasNextPage ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       )}
 
       {/* Exercise Dialog */}
