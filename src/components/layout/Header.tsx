@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { Sun, Moon, LogOut, User, Dumbbell, Menu } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,8 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useNavigate } from 'react-router-dom';
 
-const Header = ({ onMenuClick }) => {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -35,7 +39,7 @@ const Header = ({ onMenuClick }) => {
             <Menu className="h-5 w-5" />
           </Button>
           
-          <Link to="/" className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
+          <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-primary">
               <Dumbbell className="h-5 w-5 text-primary-foreground" />
             </div>
@@ -44,7 +48,7 @@ const Header = ({ onMenuClick }) => {
                 FitTrack Pro
               </h1>
             </div>
-          </Link>
+          </div>
         </div>
 
         <div className="flex items-center gap-2">

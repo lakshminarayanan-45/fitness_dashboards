@@ -1,12 +1,64 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const WorkoutContext = createContext(undefined);
+export interface Exercise {
+  id: string;
+  name: string;
+  category: string;
+  defaultSets: number;
+  defaultReps: number;
+  weight: number;
+}
+
+export interface WorkoutPlan {
+  id: string;
+  name: string;
+  description: string;
+  exercises: Exercise[];
+  createdAt: Date;
+}
+
+export interface WorkoutLog {
+  id: string;
+  date: Date;
+  exercises: {
+    exerciseId: string;
+    exerciseName: string;
+    category: string;
+    sets: number;
+    reps: number;
+    weight: number;
+    duration: number; // in minutes
+  }[];
+  totalDuration: number;
+  notes?: string;
+}
+
+interface WorkoutContextType {
+  plans: WorkoutPlan[];
+  logs: WorkoutLog[];
+  addPlan: (plan: Omit<WorkoutPlan, 'id' | 'createdAt'>) => void;
+  updatePlan: (id: string, plan: Partial<WorkoutPlan>) => void;
+  deletePlan: (id: string) => void;
+  addExerciseToPlan: (planId: string, exercise: Omit<Exercise, 'id'>) => void;
+  updateExercise: (planId: string, exerciseId: string, exercise: Partial<Exercise>) => void;
+  deleteExercise: (planId: string, exerciseId: string) => void;
+  addLog: (log: Omit<WorkoutLog, 'id'>) => void;
+  updateLog: (id: string, log: Partial<WorkoutLog>) => void;
+  deleteLog: (id: string) => void;
+  getWeeklyWorkouts: () => number;
+  getTotalTime: () => number;
+  getTotalVolume: () => { sets: number; reps: number };
+  getChartData: () => { lineData: any[]; barData: any[] };
+  getCalendarData: () => Map<string, WorkoutLog[]>;
+}
+
+const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
 
 const CATEGORIES = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core', 'Cardio'];
 
 // Generate sample data
 const generateSampleData = () => {
-  const samplePlans = [
+  const samplePlans: WorkoutPlan[] = [
     {
       id: '1',
       name: 'Push Day',
@@ -42,7 +94,7 @@ const generateSampleData = () => {
     },
   ];
 
-  const sampleLogs = [];
+  const sampleLogs: WorkoutLog[] = [];
   const today = new Date();
   
   for (let i = 0; i < 14; i++) {
@@ -74,9 +126,9 @@ const generateSampleData = () => {
   return { samplePlans, sampleLogs };
 };
 
-export const WorkoutProvider = ({ children }) => {
-  const [plans, setPlans] = useState([]);
-  const [logs, setLogs] = useState([]);
+export const WorkoutProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [plans, setPlans] = useState<WorkoutPlan[]>([]);
+  const [logs, setLogs] = useState<WorkoutLog[]>([]);
 
   useEffect(() => {
     const savedPlans = localStorage.getItem('fitness-plans');
@@ -100,18 +152,18 @@ export const WorkoutProvider = ({ children }) => {
     }
   }, []);
 
-  const savePlans = (newPlans) => {
+  const savePlans = (newPlans: WorkoutPlan[]) => {
     setPlans(newPlans);
     localStorage.setItem('fitness-plans', JSON.stringify(newPlans));
   };
 
-  const saveLogs = (newLogs) => {
+  const saveLogs = (newLogs: WorkoutLog[]) => {
     setLogs(newLogs);
     localStorage.setItem('fitness-logs', JSON.stringify(newLogs));
   };
 
-  const addPlan = (plan) => {
-    const newPlan = {
+  const addPlan = (plan: Omit<WorkoutPlan, 'id' | 'createdAt'>) => {
+    const newPlan: WorkoutPlan = {
       ...plan,
       id: crypto.randomUUID(),
       createdAt: new Date(),
@@ -119,16 +171,16 @@ export const WorkoutProvider = ({ children }) => {
     savePlans([...plans, newPlan]);
   };
 
-  const updatePlan = (id, planData) => {
+  const updatePlan = (id: string, planData: Partial<WorkoutPlan>) => {
     savePlans(plans.map(p => p.id === id ? { ...p, ...planData } : p));
   };
 
-  const deletePlan = (id) => {
+  const deletePlan = (id: string) => {
     savePlans(plans.filter(p => p.id !== id));
   };
 
-  const addExerciseToPlan = (planId, exercise) => {
-    const newExercise = {
+  const addExerciseToPlan = (planId: string, exercise: Omit<Exercise, 'id'>) => {
+    const newExercise: Exercise = {
       ...exercise,
       id: crypto.randomUUID(),
     };
@@ -139,7 +191,7 @@ export const WorkoutProvider = ({ children }) => {
     ));
   };
 
-  const updateExercise = (planId, exerciseId, exerciseData) => {
+  const updateExercise = (planId: string, exerciseId: string, exerciseData: Partial<Exercise>) => {
     savePlans(plans.map(p => 
       p.id === planId 
         ? { 
@@ -152,7 +204,7 @@ export const WorkoutProvider = ({ children }) => {
     ));
   };
 
-  const deleteExercise = (planId, exerciseId) => {
+  const deleteExercise = (planId: string, exerciseId: string) => {
     savePlans(plans.map(p => 
       p.id === planId 
         ? { ...p, exercises: p.exercises.filter(e => e.id !== exerciseId) }
@@ -160,19 +212,19 @@ export const WorkoutProvider = ({ children }) => {
     ));
   };
 
-  const addLog = (log) => {
-    const newLog = {
+  const addLog = (log: Omit<WorkoutLog, 'id'>) => {
+    const newLog: WorkoutLog = {
       ...log,
       id: crypto.randomUUID(),
     };
     saveLogs([newLog, ...logs]);
   };
 
-  const updateLog = (id, logData) => {
+  const updateLog = (id: string, logData: Partial<WorkoutLog>) => {
     saveLogs(logs.map(l => l.id === id ? { ...l, ...logData } : l));
   };
 
-  const deleteLog = (id) => {
+  const deleteLog = (id: string) => {
     saveLogs(logs.filter(l => l.id !== id));
   };
 
@@ -239,7 +291,7 @@ export const WorkoutProvider = ({ children }) => {
   };
 
   const getCalendarData = () => {
-    const calendarMap = new Map();
+    const calendarMap = new Map<string, WorkoutLog[]>();
     logs.forEach(log => {
       const dateKey = new Date(log.date).toISOString().split('T')[0];
       const existing = calendarMap.get(dateKey) || [];

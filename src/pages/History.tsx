@@ -27,11 +27,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { useWorkout, CATEGORIES } from '@/contexts/WorkoutContext';
+import { useWorkout, WorkoutLog, CATEGORIES } from '@/contexts/WorkoutContext';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-const History = () => {
+const History: React.FC = () => {
   const { logs, updateLog, deleteLog } = useWorkout();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -39,12 +39,12 @@ const History = () => {
   const [dateFilter, setDateFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [exerciseFilter, setExerciseFilter] = useState('');
-  const [editingLog, setEditingLog] = useState(null);
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [editingLog, setEditingLog] = useState<WorkoutLog | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   // Get unique exercise names from all logs
   const allExercises = useMemo(() => {
-    const exercises = new Set();
+    const exercises = new Set<string>();
     logs.forEach(log => {
       log.exercises.forEach(ex => exercises.add(ex.exerciseName));
     });
@@ -84,7 +84,7 @@ const History = () => {
     setExerciseFilter('');
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = (id: string) => {
     deleteLog(id);
     setDeleteConfirm(null);
     toast({ title: 'Deleted', description: 'Workout log deleted successfully' });
