@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Flame } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Flame, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useWorkout } from '@/contexts/WorkoutContext';
 import { cn } from '@/lib/utils';
@@ -54,27 +54,42 @@ const WorkoutCalendar = () => {
   };
 
   return (
-    <div className="glass-card rounded-2xl p-6">
+    <div className="glass-card rounded-2xl p-6 transition-all duration-300 hover:shadow-lg">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-display text-lg font-semibold">Workout Calendar</h3>
+        <h3 className="font-display text-lg font-semibold flex items-center gap-2">
+          <Calendar className="h-5 w-5 text-primary" />
+          Workout Calendar
+        </h3>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => navigateMonth('prev')}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => navigateMonth('prev')}
+            className="hover:bg-primary/10 hover:text-primary transition-colors"
+          >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="min-w-[140px] text-center font-medium">{monthYear}</span>
-          <Button variant="ghost" size="icon" onClick={() => navigateMonth('next')}>
+          <span className="min-w-[160px] text-center font-medium text-foreground">{monthYear}</span>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => navigateMonth('next')}
+            className="hover:bg-primary/10 hover:text-primary transition-colors"
+          >
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-1 mb-2">
         {days.map(day => (
-          <div key={day} className="py-2 text-center text-xs font-medium text-muted-foreground">
+          <div key={day} className="py-2 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide">
             {day}
           </div>
         ))}
-        
+      </div>
+      
+      <div className="grid grid-cols-7 gap-1">
         {Array.from({ length: firstDay }).map((_, i) => (
           <div key={`empty-${i}`} className="aspect-square" />
         ))}
@@ -90,14 +105,21 @@ const WorkoutCalendar = () => {
               key={day}
               onClick={() => handleDayClick(day)}
               className={cn(
-                "aspect-square rounded-lg flex flex-col items-center justify-center text-sm transition-all duration-200 hover:bg-secondary relative",
-                isToday && "ring-2 ring-primary",
+                "aspect-square rounded-xl flex flex-col items-center justify-center text-sm transition-all duration-200 relative group",
+                "hover:bg-secondary hover:scale-105",
+                isToday && "ring-2 ring-primary ring-offset-2 ring-offset-background",
                 hasWorkout && "bg-primary/10 hover:bg-primary/20"
               )}
             >
-              <span className={cn(isToday && "font-bold text-primary")}>{day}</span>
+              <span className={cn(
+                "font-medium",
+                isToday && "text-primary font-bold",
+                hasWorkout && "text-primary"
+              )}>
+                {day}
+              </span>
               {hasWorkout && (
-                <Flame className="h-3 w-3 text-primary absolute bottom-1" />
+                <Flame className="h-3 w-3 text-primary absolute bottom-1 animate-pulse" />
               )}
             </button>
           );
@@ -105,23 +127,26 @@ const WorkoutCalendar = () => {
       </div>
 
       <Dialog open={!!selectedWorkouts} onOpenChange={() => setSelectedWorkouts(null)}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-display">{selectedDate}</DialogTitle>
+            <DialogTitle className="font-display text-xl">{selectedDate}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 mt-4">
             {selectedWorkouts?.map((workout, idx) => (
-              <div key={idx} className="glass-card rounded-xl p-4">
+              <div key={idx} className="glass-card rounded-xl p-4 border border-primary/20">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-semibold">{workout.totalDuration} min workout</span>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="font-semibold text-primary flex items-center gap-2">
+                    <Flame className="h-4 w-4" />
+                    {workout.totalDuration} min workout
+                  </span>
+                  <span className="text-sm text-muted-foreground bg-secondary px-2 py-1 rounded-full">
                     {workout.exercises.length} exercises
                   </span>
                 </div>
                 <div className="space-y-2">
                   {workout.exercises.map((ex, exIdx) => (
-                    <div key={exIdx} className="flex justify-between text-sm">
-                      <span>{ex.exerciseName}</span>
+                    <div key={exIdx} className="flex justify-between text-sm py-1 border-b border-border/50 last:border-0">
+                      <span className="font-medium">{ex.exerciseName}</span>
                       <span className="text-muted-foreground">
                         {ex.sets}x{ex.reps} @ {ex.weight}kg
                       </span>
@@ -129,7 +154,7 @@ const WorkoutCalendar = () => {
                   ))}
                 </div>
                 {workout.notes && (
-                  <p className="mt-3 text-sm text-muted-foreground italic">
+                  <p className="mt-3 text-sm text-muted-foreground italic bg-secondary/50 p-2 rounded-lg">
                     "{workout.notes}"
                   </p>
                 )}

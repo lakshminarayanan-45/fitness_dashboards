@@ -22,10 +22,10 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       {/* Welcome Section */}
-      <div className="flex flex-col gap-2">
-        <h1 className="font-display text-3xl font-bold">
+      <div className="flex flex-col gap-2 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+        <h1 className="font-display text-3xl font-bold text-gradient">
           {getGreeting()}, {user?.name?.split(' ')[0]} 💪
         </h1>
         <p className="text-muted-foreground">
@@ -35,43 +35,55 @@ const Dashboard = () => {
 
       {/* Stats Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Weekly Workouts"
-          value={weeklyWorkouts}
-          subtitle="sessions this week"
-          icon={Flame}
-          variant="primary"
-          trend={{ value: 15, isPositive: true }}
-        />
-        <StatCard
-          title="Total Time"
-          value={`${totalTime}m`}
-          subtitle="minutes exercised"
-          icon={Clock}
-          variant="accent"
-          trend={{ value: 8, isPositive: true }}
-        />
-        <StatCard
-          title="Total Sets"
-          value={sets}
-          subtitle={`${reps} total reps`}
-          icon={Weight}
-          variant="success"
-        />
-        <StatCard
-          title="Streak"
-          value="5 days"
-          subtitle="Keep it going!"
-          icon={TrendingUp}
-          variant="default"
-        />
+        <div className="animate-slide-up" style={{ animationDelay: '0.15s' }}>
+          <StatCard
+            title="Weekly Workouts"
+            value={weeklyWorkouts}
+            subtitle="sessions this week"
+            icon={Flame}
+            variant="primary"
+            trend={{ value: 15, isPositive: true }}
+          />
+        </div>
+        <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          <StatCard
+            title="Total Time"
+            value={`${totalTime}m`}
+            subtitle="minutes exercised"
+            icon={Clock}
+            variant="accent"
+            trend={{ value: 8, isPositive: true }}
+          />
+        </div>
+        <div className="animate-slide-up" style={{ animationDelay: '0.25s' }}>
+          <StatCard
+            title="Total Sets"
+            value={sets}
+            subtitle={`${reps} total reps`}
+            icon={Weight}
+            variant="success"
+          />
+        </div>
+        <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
+          <StatCard
+            title="Streak"
+            value="5 days"
+            subtitle="Keep it going!"
+            icon={TrendingUp}
+            variant="default"
+          />
+        </div>
       </div>
 
       {/* Charts */}
-      <WorkoutCharts />
+      <div className="animate-slide-up" style={{ animationDelay: '0.35s' }}>
+        <WorkoutCharts />
+      </div>
 
       {/* Calendar */}
-      <WorkoutCalendar />
+      <div className="animate-slide-up" style={{ animationDelay: '0.4s' }}>
+        <WorkoutCalendar />
+      </div>
     </div>
   );
 };
